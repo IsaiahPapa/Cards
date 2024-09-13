@@ -1,4 +1,3 @@
-import { BarcodeScanningResult } from "expo-camera";
 import { Image, Pressable, PressableProps, Text, View } from "react-native";
 
 export type CardType = {
@@ -11,7 +10,7 @@ export type CardType = {
     number: string;
 };
 
-const LogoOrCode = ({
+export const LogoOrCode = ({
     title,
     isKnownBrand,
     imageUri,
@@ -59,7 +58,7 @@ const Card: React.FC<CardProps> = ({
             style={{
                 backgroundColor: color,
             }}
-            className={`m-2 rounded-lg shadow-md overflow-hidden w-full h-48 items-center justify-center`}
+            className={`rounded-lg shadow-md overflow-hidden w-full h-48 items-center justify-center`}
         >
             <View className="items-center justify-center">
                 <LogoOrCode

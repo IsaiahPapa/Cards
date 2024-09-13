@@ -35,9 +35,7 @@ export default function LandingPage() {
             <ScrollView className="px-8 mt-24">
                 <View className="flex flex-row justify-between">
                     <Text
-                        className={`text-4xl font-bold mb-4 ${
-                            colorScheme === "dark" ? "text-white" : "text-black"
-                        }`}
+                        className={`text-4xl font-bold mb-4 dark:text-white text-black`}
                     >
                         Your Cards
                     </Text>
@@ -53,9 +51,7 @@ export default function LandingPage() {
                     onPress={() => reset()}
                 >
                     <Text
-                        className={`${
-                            colorScheme === "dark" ? "text-white" : "text-black"
-                        }`}
+                        className={`dark:text-white text-black`}
                     >
                         Reset
                     </Text>
@@ -69,6 +65,7 @@ export default function LandingPage() {
                                     params: { id: card.id },
                                 });
                             }}
+                            key={card.id}
                             id={card.id}
                             title={card.title}
                             imageUri={card.imageUri}
@@ -82,11 +79,7 @@ export default function LandingPage() {
                 {cards.length === 0 && (
                     <View className="flex gap-4 w-full h-48 items-center justify-center border-neutral-600 border-2 rounded-2xl">
                         <Text
-                            className={`text-xl font-semibold ${
-                                colorScheme === "dark"
-                                    ? "text-white"
-                                    : "text-black"
-                            }`}
+                            className={`text-xl font-semibold dark:text-white text-black`}
                         >
                             Add a card!
                         </Text>

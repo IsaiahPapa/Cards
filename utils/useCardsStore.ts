@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 import { MMKV } from "react-native-mmkv";
 import { CardType } from "@/components/Card";
 
@@ -10,10 +10,11 @@ interface CardStore {
     addCard: (card: CardType) => void;
     loadCards: () => void;
     reset: () => void;
+    getCard: (id: CardType["id"])=> CardType | undefined
 }
 
 // Zustand Store in TypeScript
-export const useCardStore = create<CardStore>((set) => ({
+export const useCardStore = create<CardStore>((set, get) => ({
     cards: [],
     addCard: (card) => {
         set((state) => {
@@ -22,7 +23,7 @@ export const useCardStore = create<CardStore>((set) => ({
             return { cards: updatedCards };
         });
     },
-    reset: ()=>{
+    reset: () => {
         set(() => {
             storage.set("cards", JSON.stringify([])); // Save to MMKV
             return { cards: [] };
@@ -33,5 +34,11 @@ export const useCardStore = create<CardStore>((set) => ({
         if (savedCards) {
             set({ cards: JSON.parse(savedCards) }); // Hydrate Zustand store with MMKV data
         }
+    },
+
+    getCard: (id) => {
+        const cards = get().cards.filter((card) => card.id === id);
+        if (cards.length === 0) return;
+        return cards[0];
     },
 }));
