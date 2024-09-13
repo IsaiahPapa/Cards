@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { SafeAreaView } from "react-native";
+import { SafeAreaView, useColorScheme } from "react-native";
 
 import SelectCard from "./SelectCard";
 import ScanCardPage from "./ScanCard";
 import FinalizeCard from "./FinalizeCard";
 import { CardType } from "../Card";
+import { useCardStore } from "@/utils/useCardsStore";
+import uuid from 'react-native-uuid';
+
 
 const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
     const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'add'
 
     const [card, setCard] = useState<CardType>({
+        id: uuid.v4().toString(),
         color: "#AEC6CF",
         imageUri: null,
         isKnownBrand: false,
@@ -18,8 +22,18 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
         type: "",
     });
 
+    const theme = useColorScheme() ?? "dark";
+    const { addCard } = useCardStore();
+
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "black", width: "100%", alignItems: "center" }}>
+        <SafeAreaView
+            style={{
+                flex: 1,
+                backgroundColor: theme === "dark" ? "black" : "white",
+                width: "100%",
+                alignItems: "center",
+            }}
+        >
             {currentPage === "list" && (
                 <SelectCard
                     onAddNewCard={() => {
@@ -29,7 +43,10 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
                     onAddKnownCard={(card) => {
                         //SetBarcode Data
                         setCurrentPage("scanCard");
-                        setCard(card);
+                        setCard((prev) => ({
+                            ...prev,
+                            card,
+                        }));
                     }}
                 />
             )}
@@ -56,6 +73,7 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
                     }}
                     onFinalize={(card) => {
                         console.log(`Card to Add`, card);
+                        addCard(card);
                         onSuccess();
                     }}
                 />

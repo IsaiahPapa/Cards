@@ -8,14 +8,18 @@ import {
     Image,
     SectionList,
     GestureResponderEvent,
+    useColorScheme,
 } from "react-native";
 import { CardType } from "../Card";
+import { useIsDarkMode } from "../Themed";
+import { RequireAtLeastOne } from "@/utils/types";
 
 const cards = [
     {
         id: 1,
         title: "Costco",
-        logoUri: "https://www.costco.com/wcsstore/CostcoGLOBALSAS/images/membership-card-business.png",
+        logoUri:
+            "https://www.costco.com/wcsstore/CostcoGLOBALSAS/images/membership-card-business.png",
     },
     {
         id: 2,
@@ -27,7 +31,8 @@ const cards = [
     {
         id: 3,
         title: "Starbucks",
-        logoUri: "https://globalassets.starbucks.com/digitalassets/cards/fy20/BrailleFY20.jpg",
+        logoUri:
+            "https://globalassets.starbucks.com/digitalassets/cards/fy20/BrailleFY20.jpg",
     },
     {
         id: 4,
@@ -38,7 +43,8 @@ const cards = [
     {
         id: 6,
         title: "Target",
-        logoUri: "https://target.scene7.com/is/image/Target/GUEST_9db0ad32-4da8-47b3-b7c3-c42f2fee981d",
+        logoUri:
+            "https://target.scene7.com/is/image/Target/GUEST_9db0ad32-4da8-47b3-b7c3-c42f2fee981d",
     },
     {
         id: 7,
@@ -56,7 +62,8 @@ const cards = [
     {
         id: 9,
         title: "Sephora",
-        logoUri: "https://content.blackhawknetwork.com/gcmimages/product/xxlarge/89524.png?dt=1614280975777",
+        logoUri:
+            "https://content.blackhawknetwork.com/gcmimages/product/xxlarge/89524.png?dt=1614280975777",
         group: "Beauty",
     },
     {
@@ -69,7 +76,8 @@ const cards = [
     {
         id: 11,
         title: "PetSmart",
-        logoUri: "https://irresistiblepets.net/wp-content/uploads/2012/03/petperks.png",
+        logoUri:
+            "https://irresistiblepets.net/wp-content/uploads/2012/03/petperks.png",
     },
     {
         id: 12,
@@ -87,34 +95,69 @@ type KnownCard = {
 };
 
 // Assuming AddNewCardButton and CardItem are defined with appropriate types elsewhere in your code
-const CardItem = ({ card }: { card: KnownCard }) => (
-    <View className="flex-row items-center bg-neutral-800 p-2 rounded-lg min-w-36">
-        <Image source={{ uri: card.logoUri }} className="w-20 aspect-[1.6] mr-4 rounded-md" />
-        <Text className="text-white">{card.title}</Text>
-    </View>
-);
-const AddNewCardButton: React.FC<{ onAddCard: (event: GestureResponderEvent) => void }> = ({ onAddCard }) => {
+const CardItem = ({ card }: { card: KnownCard }) => {
+    const isDarkMode = useIsDarkMode();
+    return (
+        <View className="flex-row items-center p-2 rounded-lg min-w-36">
+            <Image
+                source={{ uri: card.logoUri }}
+                className="w-20 aspect-[1.6] mr-4 rounded-md"
+            />
+            <Text className={isDarkMode ? "text-white" : "text-black"}>
+                {card.title}
+            </Text>
+        </View>
+    );
+};
+
+const AddNewCardButton: React.FC<{
+    onAddCard: (event: GestureResponderEvent) => void;
+}> = ({ onAddCard }) => {
+    const isDarkMode = useIsDarkMode();
     return (
         <TouchableOpacity
             onPress={onAddCard}
-            className="flex-row items-center bg-neutral-800 p-2 rounded-lg min-w-36"
+            className={`flex-row items-center  ${
+                isDarkMode ? "bg-neutral-800" : "bg-neutral-100"
+            }  p-2 rounded-lg min-w-36 shadow-sm`}
         >
             <View
-                style={{ borderColor: "rgba(255, 255, 255, .5)" }}
-                className="w-20 aspect-[1.6] border-white border-opacity-50 border-2 rounded-lg mr-4 items-center justify-center"
+                style={{
+                    borderColor: isDarkMode
+                        ? "rgba(255, 255, 255, .5)"
+                        : "rgba(0, 0, 0, 0.3)",
+                }}
+                className="w-20 aspect-[1.6] border-opacity-50 border-2 rounded-lg mr-4 items-center justify-center"
             >
-                <FontAwesome name="plus" size={20} style={{ opacity: 0.5 }} color={"white"} />
+                <FontAwesome
+                    name="plus"
+                    size={20}
+                    style={{
+                        color: isDarkMode
+                            ? "rgba(255, 255, 255, .5)"
+                            : "rgba(0, 0, 0, 0.3)",
+                    }}
+                />
             </View>
-            <Text className="text-lg text-white">Add Card</Text>
+            <Text
+                className={`text-lg ${
+                    isDarkMode ? "text-white" : "text-black"
+                }`}
+            >
+                Add Card
+            </Text>
         </TouchableOpacity>
     );
 };
 
 const SelectCard: React.FC<{
     onAddNewCard: (event: GestureResponderEvent) => void;
-    onAddKnownCard: (card: CardType) => void;
+    onAddKnownCard: (card: RequireAtLeastOne<CardType>) => void;
 }> = ({ onAddNewCard, onAddKnownCard }) => {
     const [searchQuery, setSearchQuery] = useState("");
+
+    const theme = useColorScheme() ?? "light";
+    const isDarkMode = useMemo(() => theme === "dark", [theme]);
 
     const renderHeader = useMemo(
         () => (
@@ -124,7 +167,7 @@ const SelectCard: React.FC<{
                         width: "25%",
                         height: 6,
                         marginTop: 8,
-                        backgroundColor: "#ccc",
+                        backgroundColor: isDarkMode ? "#ccc" : "#333",
                         borderRadius: 3,
                         alignSelf: "center",
                         marginBottom: 16,
@@ -134,19 +177,28 @@ const SelectCard: React.FC<{
                     style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        backgroundColor: "#666",
+                        backgroundColor: isDarkMode ? "#ccc" : "#ccc",
                         padding: 12,
                         borderRadius: 8,
                         marginBottom: 16,
                     }}
                 >
-                    <Ionicons name="search" size={16} color="#ccc" style={{ marginRight: 8 }} />
+                    <Ionicons
+                        name="search"
+                        size={16}
+                        color={isDarkMode ? "#ccc" : "#333"}
+                        style={{ marginRight: 8 }}
+                    />
                     <TextInput
                         placeholder="Search card"
-                        placeholderTextColor="#ccc"
+                        placeholderTextColor={isDarkMode ? "#ccc" : "#333"}
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                        style={{ flex: 1, color: "white", fontSize: 16 }}
+                        style={{
+                            flex: 1,
+                            color: isDarkMode ? "white" : "black",
+                            fontSize: 16,
+                        }}
                     />
                 </View>
                 <AddNewCardButton onAddCard={onAddNewCard} />
@@ -160,7 +212,10 @@ const SelectCard: React.FC<{
             card.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
         const grouped = filteredCards.reduce(
-            (acc: { [key: string]: { title: string; data: KnownCard[] } }, card) => {
+            (
+                acc: { [key: string]: { title: string; data: KnownCard[] } },
+                card
+            ) => {
                 const firstLetter = card.title[0].toUpperCase();
                 if (!acc[firstLetter]) {
                     acc[firstLetter] = { title: firstLetter, data: [] };
@@ -171,30 +226,33 @@ const SelectCard: React.FC<{
             {}
         );
 
-        return Object.values(grouped).sort((a, b) => a.title.localeCompare(b.title));
+        return Object.values(grouped).sort((a, b) =>
+            a.title.localeCompare(b.title)
+        );
     }, [cards, searchQuery]); // Include searchQuery in dependencies
 
-    const sectionData = Object.values(sections).sort((a, b) => a.title.localeCompare(b.title));
+    const sectionData = Object.values(sections).sort((a, b) =>
+        a.title.localeCompare(b.title)
+    );
 
     return (
         <>
             <SectionList<KnownCard>
-                className="w-full"
+                className="w-full px-2"
                 data={sectionData}
                 renderItem={({ item }) => {
                     return (
                         <TouchableOpacity
                             onPress={() => {
                                 onAddKnownCard({
-                                    color: "",
                                     imageUri: item.logoUri,
                                     isKnownBrand: true,
                                     title: item.title,
-                                    number: "",
-                                    type: "",
                                 });
                             }}
-                            className="flex-row items-center bg-neutral-800 p-2 rounded-lg min-w-36"
+                            className={`flex-row items-center ${
+                                isDarkMode ? "bg-neutral-800" : "bg-neutral-100"
+                            } shadow-sm p-2 rounded-lg min-w-36`}
                         >
                             <CardItem card={item} />
                         </TouchableOpacity>
@@ -203,7 +261,14 @@ const SelectCard: React.FC<{
                 keyExtractor={(item) => item.id.toString()}
                 ListHeaderComponent={renderHeader}
                 renderSectionHeader={({ section: { title } }) => (
-                    <Text style={{ color: "white", fontWeight: "bold", padding: 8, fontSize: 18 }}>
+                    <Text
+                        style={{
+                            color: isDarkMode ? "white" : "black",
+                            fontWeight: "bold",
+                            padding: 8,
+                            fontSize: 18,
+                        }}
+                    >
                         {title}
                     </Text>
                 )}

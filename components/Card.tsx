@@ -1,12 +1,12 @@
 import { BarcodeScanningResult } from "expo-camera";
-import { Image, Text, View } from "react-native";
+import { Image, Pressable, PressableProps, Text, View } from "react-native";
 
 export type CardType = {
+    id: string;
     title: string;
     color: string;
     imageUri: string | null;
     isKnownBrand: boolean;
-
     type: string;
     number: string;
 };
@@ -22,7 +22,9 @@ const LogoOrCode = ({
 }) => {
     title = String(title ?? "");
     if (isKnownBrand && imageUri) {
-        return <Image source={{ uri: imageUri }} className="h-20 aspect-square" />;
+        return (
+            <Image source={{ uri: imageUri }} className="h-20 aspect-square" />
+        );
     } else {
         let code = "";
         if (title.length < 2) {
@@ -36,25 +38,40 @@ const LogoOrCode = ({
                 .toUpperCase(); // Extracts initials and limits to 4 chars
         }
 
-        return <Text className="text-4xl text-center text-white my-4">{code}</Text>;
+        return (
+            <Text className="text-4xl text-center text-white my-4">{code}</Text>
+        );
     }
 };
 
-const Card: React.FC<CardType> = (card) => {
+interface CardProps extends Omit<CardType, "id">, PressableProps {}
+
+const Card: React.FC<CardProps> = ({
+    title,
+    color,
+    isKnownBrand,
+    imageUri,
+    ...pressableProps
+}) => {
     return (
-        <View
+        <Pressable
+            {...pressableProps}
             style={{
-                backgroundColor: card.color,
+                backgroundColor: color,
             }}
             className={`m-2 rounded-lg shadow-md overflow-hidden w-full h-48 items-center justify-center`}
         >
             <View className="items-center justify-center">
-                <LogoOrCode isKnownBrand={card.isKnownBrand} title={card.title} imageUri={card.imageUri} />
+                <LogoOrCode
+                    isKnownBrand={isKnownBrand}
+                    title={title}
+                    imageUri={imageUri}
+                />
             </View>
             <View className="pb-2 absolute bottom-0">
-                <Text className="text-lg text-white text-center">{card.title}</Text>
+                <Text className="text-lg text-white text-center">{title}</Text>
             </View>
-        </View>
+        </Pressable>
     );
 };
 
