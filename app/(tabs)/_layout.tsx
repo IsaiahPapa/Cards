@@ -40,21 +40,13 @@ export default function TabLayout() {
                     ),
                 }}
             />
+
             <Tabs.Screen
-                name="two"
+                name="settings"
                 options={{
-                    title: "Tab Two",
+                    title: "Settings",
                     tabBarIcon: ({ color }) => (
-                        <TabBarIcon name="code" color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="juice"
-                options={{
-                    title: "Juice",
-                    tabBarIcon: ({ color }) => (
-                        <FontAwesome name="briefcase" color={color} />
+                        <FontAwesome name="gear" color={color} size={24} />
                     ),
                 }}
             />
