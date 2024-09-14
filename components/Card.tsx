@@ -1,4 +1,16 @@
 import { Image, Pressable, PressableProps, Text, View } from "react-native";
+type CardLocation = {
+    latitude: number;
+    longitude: number;
+};
+
+interface Photo {
+    id: string; // Unique identifier for the photo
+    uri: string; // Local or remote URI for the photo
+    type: "local" | "remote"; // Whether it's stored locally or remotely
+    createdAt: Date; // When the photo was taken or added
+    syncedToCloud?: boolean; // Boolean flag for whether it’s synced to iCloud (optional)
+}
 
 export type CardType = {
     id: string;
@@ -8,6 +20,9 @@ export type CardType = {
     isKnownBrand: boolean;
     type: string;
     number: string;
+    notes: string;
+    locations: CardLocation[];
+    photos: Photo[];
 };
 
 export const LogoOrCode = ({

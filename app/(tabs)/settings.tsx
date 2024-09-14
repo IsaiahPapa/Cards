@@ -25,7 +25,8 @@ const SettingItem = ({
     toggle?: boolean;
 }) => (
     <TouchableOpacity className="p-4 flex-row items-center" onPress={onPress}>
-        <View className="w-8">{icon}</View>
+        <Text className="w-8 dark:text-white opacity-50">{icon}</Text>
+        
         <Text className="dark:text-white text-black text-lg flex-1 ml-3">
             {title}
         </Text>
@@ -48,7 +49,7 @@ const Divider = () => (
 );
 
 const SectionTitle = ({ title }: { title: string }) => (
-    <Text className="text-lg font-semibold text-gray-500 dark:text-gray-400 mt-6 mb-2 px-4">
+    <Text className="text-lg font-semibold text-gray-500 dark:text-gray-400 mt-6 mb-2">
         {title}
     </Text>
 );
@@ -60,7 +61,7 @@ const SettingsMenu = () => {
     return (
         <ScrollView className="flex-1 bg-white dark:bg-black">
             <View className="mt-20 mx-4">
-                <Text className="text-4xl font-bold dark:text-white text-black mb-8">
+                <Text className="text-4xl font-bold dark:text-white text-black">
                     Settings
                 </Text>
 
@@ -71,7 +72,6 @@ const SettingsMenu = () => {
                             <FontAwesome
                                 name="user"
                                 size={20}
-                                className="text-blue-500"
                             />
                         }
                         title="Profile"
@@ -85,7 +85,6 @@ const SettingsMenu = () => {
                             <FontAwesome
                                 name="lock"
                                 size={20}
-                                className="text-green-500"
                             />
                         }
                         title="Privacy"
@@ -102,7 +101,6 @@ const SettingsMenu = () => {
                             <FontAwesome
                                 name="bell"
                                 size={20}
-                                className="text-yellow-500"
                             />
                         }
                         title="Notifications"
@@ -118,7 +116,6 @@ const SettingsMenu = () => {
                             <FontAwesome
                                 name="moon-o"
                                 size={20}
-                                color={"#6c5ce7"}
                             />
                         }
                         title="Dark Mode"

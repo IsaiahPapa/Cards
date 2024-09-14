@@ -35,6 +35,9 @@ const FinalizeCard: React.FC<{
                     isKnownBrand={card.isKnownBrand}
                     type={card.type}
                     number={card.number}
+                    notes={card.notes}
+                    locations={card.locations}
+                    photos={card.photos}
                 />
             </View>
 

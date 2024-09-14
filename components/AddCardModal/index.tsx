@@ -6,8 +6,7 @@ import ScanCardPage from "./ScanCard";
 import FinalizeCard from "./FinalizeCard";
 import { CardType } from "../Card";
 import { useCardStore } from "@/utils/useCardsStore";
-import uuid from 'react-native-uuid';
-
+import uuid from "react-native-uuid";
 
 const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
     const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'add'
@@ -20,6 +19,9 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
         title: "",
         number: "",
         type: "",
+        notes: "",
+        locations: [],
+        photos: [],
     });
 
     const theme = useColorScheme() ?? "dark";

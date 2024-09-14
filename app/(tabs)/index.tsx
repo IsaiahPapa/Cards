@@ -1,30 +1,43 @@
 import AddCardModal from "@/components/AddCardModal";
-import SelectCard from "@/components/AddCardModal/SelectCard";
-import Card, { CardType } from "@/components/Card";
+import Card from "@/components/Card";
 import { useCardStore } from "@/utils/useCardsStore";
 import { FontAwesome } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
-import { useColorScheme } from "nativewind";
-import React, { useEffect, useState } from "react";
-import {
-    View,
-    Text,
-    Image,
-    ScrollView,
-    TouchableOpacity,
-    Modal,
-    TextInput,
-    Button,
-} from "react-native";
+import { router } from "expo-router";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
 
 //https://www.npmjs.com/package/react-native-wallet-manager
 
+const DebugButtons = () => {
+    const { reset } = useCardStore();
+    const isDev = useMemo(() => {
+        return process.env.NODE_ENV === "development";
+    }, []);
+
+    if (!isDev) return <></>;
+
+    return (
+        <View className="flex flex-col gap-2 rounded-xl mb-8 p-4" style={{backgroundColor: "#59b5f7"}}>
+            <Text
+                className={`text-xl font-bold text-white`}
+            >
+                Debug Buttons
+            </Text>
+            <View className="flex flex-row gap-4">
+                <TouchableOpacity
+                    className="bg-white w-full h-10 rounded-full items-center justify-center"
+                    onPress={() => reset()}
+                >
+                    <Text className={`text-black`}>Reset Cards</Text>
+                </TouchableOpacity>
+            </View>
+        </View>
+    );
+};
+
 export default function LandingPage() {
-    // Extended mock data with additional fields for branding
-    const { colorScheme } = useColorScheme();
-    // const [modalVisible, setModalVisible] = useState(false);
     const [modal, setModal] = useState("");
-    const { cards, reset } = useCardStore();
+    const { cards } = useCardStore();
 
     useEffect(() => {
         useCardStore.getState().loadCards(); // Load cards from MMKV
@@ -37,7 +50,7 @@ export default function LandingPage() {
                     <Text
                         className={`text-4xl font-bold mb-4 dark:text-white text-black`}
                     >
-                        Your Cards
+                        Cards
                     </Text>
                     <TouchableOpacity
                         className="bg-white w-10 h-10 rounded-full items-center justify-center"
@@ -46,16 +59,8 @@ export default function LandingPage() {
                         <FontAwesome name="plus" color={"black"} size={16} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    className="bg-white w-full h-10 rounded-full items-center justify-center my-4"
-                    onPress={() => reset()}
-                >
-                    <Text
-                        className={`dark:text-white text-black`}
-                    >
-                        Reset
-                    </Text>
-                </TouchableOpacity>
+
+                <DebugButtons />
                 <View className="flex-1 flex-row flex-wrap justify-center">
                     {cards.map((card) => (
                         <Card
@@ -73,6 +78,9 @@ export default function LandingPage() {
                             isKnownBrand={card.isKnownBrand}
                             type={card.type}
                             number={card.number}
+                            notes={card.notes}
+                            locations={card.locations}
+                            photos={card.photos}
                         />
                     ))}
                 </View>
@@ -90,7 +98,7 @@ export default function LandingPage() {
                 animationType="slide"
                 visible={modal === "addCard"}
                 onRequestClose={() => setModal("")}
-                presentationStyle="pageSheet"
+                presentationStyle="formSheet"
             >
                 <AddCardModal
                     onSuccess={() => {
