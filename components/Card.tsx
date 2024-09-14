@@ -1,3 +1,4 @@
+import { BlurView } from "expo-blur";
 import { Image, Pressable, PressableProps, Text, View } from "react-native";
 type CardLocation = {
     latitude: number;
@@ -73,17 +74,35 @@ const Card: React.FC<CardProps> = ({
             style={{
                 backgroundColor: color,
             }}
-            className={`rounded-lg shadow-md overflow-hidden w-full h-48 items-center justify-center`}
+            className={`rounded-xl shadow-md overflow-hidden w-full h-48 aspect-[1.6] items-center justify-center`}
         >
-            <View className="items-center justify-center">
-                <LogoOrCode
-                    isKnownBrand={isKnownBrand}
-                    title={title}
-                    imageUri={imageUri}
+            {isKnownBrand && imageUri ? (
+                <Image
+                    source={{ uri: imageUri }}
+                    className="h-full w-full absolute top-0 left-0"
                 />
-            </View>
-            <View className="pb-2 absolute bottom-0">
-                <Text className="text-lg text-white text-center">{title}</Text>
+            ) : (
+                <View className="items-center justify-center">
+                    <LogoOrCode
+                        isKnownBrand={isKnownBrand}
+                        title={title}
+                        imageUri={imageUri}
+                    />
+                </View>
+            )}
+            <View
+                className="mb-2 absolute bottom-0"
+                style={{
+                    borderRadius: 99,
+                    overflow: "hidden",
+                }}
+            >
+                <BlurView
+                    tint="default"
+                    className="flex-row py-3 px-8 gap-4 items-center"
+                >
+                    <Text className="text-black font-semibold text-xl">{title}</Text>
+                </BlurView>
             </View>
         </Pressable>
     );

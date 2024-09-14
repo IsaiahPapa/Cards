@@ -6,10 +6,14 @@ import {
     TouchableOpacity,
     Switch,
     GestureResponderEvent,
+    Linking,
+    Alert,
 } from "react-native";
 
 import { FontAwesome } from "@expo/vector-icons";
 import { Icon } from "@expo/vector-icons/build/createIconSet";
+import { BlurView } from "expo-blur";
+import { router } from "expo-router";
 
 const SettingItem = ({
     icon,
@@ -26,7 +30,7 @@ const SettingItem = ({
 }) => (
     <TouchableOpacity className="p-4 flex-row items-center" onPress={onPress}>
         <Text className="w-8 dark:text-white opacity-50">{icon}</Text>
-        
+
         <Text className="dark:text-white text-black text-lg flex-1 ml-3">
             {title}
         </Text>
@@ -58,8 +62,9 @@ const SettingsMenu = () => {
     const [notificationsEnabled, setNotificationsEnabled] = useState(true);
     const [darkModeEnabled, setDarkModeEnabled] = useState(false);
 
+
     return (
-        <ScrollView className="flex-1 bg-white dark:bg-black">
+        <View className="flex-1 bg-white dark:bg-black">
             <View className="mt-20 mx-4">
                 <Text className="text-4xl font-bold dark:text-white text-black">
                     Settings
@@ -68,12 +73,7 @@ const SettingsMenu = () => {
                 <SectionTitle title="Account" />
                 <View className="bg-neutral-100 dark:bg-neutral-800 rounded-lg">
                     <SettingItem
-                        icon={
-                            <FontAwesome
-                                name="user"
-                                size={20}
-                            />
-                        }
+                        icon={<FontAwesome name="user" size={20} />}
                         title="Profile"
                         onPress={() => {
                             /* Navigate to Profile */
@@ -81,12 +81,7 @@ const SettingsMenu = () => {
                     />
                     <Divider />
                     <SettingItem
-                        icon={
-                            <FontAwesome
-                                name="lock"
-                                size={20}
-                            />
-                        }
+                        icon={<FontAwesome name="lock" size={20} />}
                         title="Privacy"
                         onPress={() => {
                             /* Navigate to Privacy */
@@ -97,12 +92,7 @@ const SettingsMenu = () => {
                 <SectionTitle title="Preferences" />
                 <View className="bg-neutral-100 dark:bg-neutral-800 rounded-lg">
                     <SettingItem
-                        icon={
-                            <FontAwesome
-                                name="bell"
-                                size={20}
-                            />
-                        }
+                        icon={<FontAwesome name="bell" size={20} />}
                         title="Notifications"
                         value={notificationsEnabled}
                         onPress={() =>
@@ -112,12 +102,7 @@ const SettingsMenu = () => {
                     />
                     <Divider />
                     <SettingItem
-                        icon={
-                            <FontAwesome
-                                name="moon-o"
-                                size={20}
-                            />
-                        }
+                        icon={<FontAwesome name="moon-o" size={20} />}
                         title="Dark Mode"
                         value={darkModeEnabled}
                         onPress={() => setDarkModeEnabled(!darkModeEnabled)}
@@ -128,12 +113,7 @@ const SettingsMenu = () => {
                 <SectionTitle title="Support" />
                 <View className="bg-neutral-100 dark:bg-neutral-800 rounded-lg">
                     <SettingItem
-                        icon={
-                            <FontAwesome
-                                name="question-circle"
-                                size={20}
-                            />
-                        }
+                        icon={<FontAwesome name="question-circle" size={20} />}
                         title="Help Center"
                         onPress={() => {
                             /* Navigate to Help Center */
@@ -149,24 +129,23 @@ const SettingsMenu = () => {
                             />
                         }
                         title="Contact Us"
-                        onPress={() => {
-                            /* Navigate to Contact Us */
-                        }}
+                        onPress={()=>{}}
                     />
                 </View>
-
+                {/* 
                 <TouchableOpacity
                     className="mt-8 p-4 bg-red-500 rounded-lg"
                     onPress={() => {
-                        /* Handle logout */
+
                     }}
                 >
                     <Text className="text-white text-center text-lg font-semibold">
                         Log Out
                     </Text>
                 </TouchableOpacity>
+                 */}
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

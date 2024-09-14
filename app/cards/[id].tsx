@@ -1,9 +1,10 @@
 import Card, { LogoOrCode } from "@/components/Card";
 import { useCardStore } from "@/utils/useCardsStore";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Barcode from "@kichiyaki/react-native-barcode-generator";
 import {
+    Alert,
     Dimensions,
     ScrollView,
     Text,
@@ -29,10 +30,10 @@ export default function Page() {
     const [isNotesOpen, setNotesOpen] = useState(false);
     const [isEditOpen, setEditOpen] = useState(false);
     const { id } = useLocalSearchParams();
-    const { getCard } = useCardStore();
+    const { getCard, removeCard } = useCardStore();
 
     const card = getCard(String(id));
-    
+
     useEffect(() => {
         // Simulating getting user's location
         // In a real app, you'd use Geolocation API
@@ -163,6 +164,32 @@ export default function Page() {
                             </MapView>
                         </View>
                     )}
+                    <TouchableOpacity
+                        className="mt-8 p-4 bg-red-500 rounded-lg"
+                        onPress={() => {
+                            Alert.alert(
+                                `Delete card '${card.title}'`,
+                                "Are you sure you want to delete this card?",
+                                [
+                                    {
+                                        text: "Yes",
+                                        onPress: () => {
+                                            removeCard(card.id);
+                                            router.navigate("/(tabs)/")
+                                        },
+                                        
+                                    },
+                                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+
+                                ],
+                                {"cancelable": true}
+                            );
+                        }}
+                    >
+                        <Text className="text-white text-center text-lg font-semibold">
+                            Remove card
+                        </Text>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
             <NoteModal

@@ -10,6 +10,7 @@ const storage = new MMKV();
 interface CardStore {
     cards: CardType[];
     addCard: (card: CardType) => void;
+    removeCard: (id: string)=> void;
     loadCards: () => void;
     reset: () => void;
     getCard: (id: CardType["id"]) => CardType | undefined;
@@ -29,6 +30,12 @@ export const useCardStore = create<CardStore>((set, get) => ({
             storage.set("cards", JSON.stringify(updatedCards)); // Save to MMKV
             return { cards: updatedCards };
         });
+    },
+    removeCard: (id: string)=>{
+        set((state)=>{
+            const updatedCard = state.cards.filter(card=>card.id !== id);
+            return {cards: updatedCard}
+        })
     },
     reset: () => {
         set(() => {

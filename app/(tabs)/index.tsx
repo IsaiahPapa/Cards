@@ -1,10 +1,12 @@
 import AddCardModal from "@/components/AddCardModal";
 import Card from "@/components/Card";
+import { useIsDarkMode } from "@/components/Themed";
 import { useCardStore } from "@/utils/useCardsStore";
 import { FontAwesome } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import Svg, { Path } from "react-native-svg";
 
 //https://www.npmjs.com/package/react-native-wallet-manager
 
@@ -17,10 +19,11 @@ const DebugButtons = () => {
     if (!isDev) return <></>;
 
     return (
-        <View className="flex flex-col gap-2 rounded-xl mb-8 p-4" style={{backgroundColor: "#59b5f7"}}>
-            <Text
-                className={`text-xl font-bold text-white`}
-            >
+        <View
+            className="flex flex-col gap-2 rounded-xl mb-8 p-4"
+            style={{ backgroundColor: "#59b5f7" }}
+        >
+            <Text className={`text-xl font-bold text-white`}>
                 Debug Buttons
             </Text>
             <View className="flex flex-row gap-4">
@@ -32,6 +35,39 @@ const DebugButtons = () => {
                 </TouchableOpacity>
             </View>
         </View>
+    );
+};
+
+const NoCardsAddCardButton = ({ onAdd }: { onAdd(): void }) => {
+
+    const isDarkMode = useIsDarkMode();
+    return (
+        <>
+            <TouchableOpacity
+                onPress={onAdd}
+                className="flex gap-4 w-full h-48 items-center justify-center border-dashed bg-neutral-200 border-neutral-600 dark:bg-neutral-900 dark:border-neutral-600 border-2 rounded-2xl"
+            >
+                <Svg
+                    viewBox="0 0 448 512"
+                    width="48"
+                    height="48"
+                    fill={isDarkMode ? "white" : "black"}
+                >
+                    <Path d="M248 72c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 160L40 232c-13.3 0-24 10.7-24 24s10.7 24 24 24l160 0 0 160c0 13.3 10.7 24 24 24s24-10.7 24-24l0-160 160 0c13.3 0 24-10.7 24-24s-10.7-24-24-24l-160 0 0-160z" />
+                </Svg>
+
+                <Text
+                    className={`text-xl font-semibold dark:text-white text-black opa`}
+                >
+                    Add new card
+                </Text>
+            </TouchableOpacity>
+            <Text
+                className={`text-lg dark:text-white text-black text-center mt-8 opacity-50`}
+            >
+                Tap the card above to add your first card
+            </Text>
+        </>
     );
 };
 
@@ -85,13 +121,11 @@ export default function LandingPage() {
                     ))}
                 </View>
                 {cards.length === 0 && (
-                    <View className="flex gap-4 w-full h-48 items-center justify-center border-neutral-600 border-2 rounded-2xl">
-                        <Text
-                            className={`text-xl font-semibold dark:text-white text-black`}
-                        >
-                            Add a card!
-                        </Text>
-                    </View>
+                    <NoCardsAddCardButton
+                        onAdd={() => {
+                            setModal("addCard");
+                        }}
+                    />
                 )}
             </ScrollView>
             <Modal
@@ -103,6 +137,9 @@ export default function LandingPage() {
                 <AddCardModal
                     onSuccess={() => {
                         setModal("");
+                    }}
+                    onClose={()=>{
+                        setModal("")
                     }}
                 />
             </Modal>

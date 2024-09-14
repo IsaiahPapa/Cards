@@ -8,7 +8,10 @@ import { CardType } from "../Card";
 import { useCardStore } from "@/utils/useCardsStore";
 import uuid from "react-native-uuid";
 
-const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
+const AddCardModal: React.FC<{ onSuccess: () => void; onClose(): void }> = ({
+    onSuccess,
+    onClose,
+}) => {
     const [currentPage, setCurrentPage] = useState("list"); // 'list' or 'add'
 
     const [card, setCard] = useState<CardType>({
@@ -39,16 +42,15 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
             {currentPage === "list" && (
                 <SelectCard
                     onAddNewCard={() => {
-                        // transitionToPage("createNewCard");
-                        setCurrentPage("finalize");
+                        setCurrentPage("scanCard");
                     }}
                     onAddKnownCard={(card) => {
                         //SetBarcode Data
-                        setCurrentPage("scanCard");
                         setCard((prev) => ({
                             ...prev,
-                            card,
+                            ...card,
                         }));
+                        setCurrentPage("scanCard");
                     }}
                 />
             )}
@@ -56,6 +58,9 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
                 <ScanCardPage
                     onBack={() => {
                         setCurrentPage("list");
+                    }}
+                    onEnterManually={() => {
+                        setCurrentPage("finalize");
                     }}
                     onCardScanned={(barcode) => {
                         setCard((prev) => ({
@@ -70,13 +75,20 @@ const AddCardModal: React.FC<{ onSuccess: () => void }> = ({ onSuccess }) => {
             {currentPage === "finalize" && (
                 <FinalizeCard
                     card={card}
-                    onBack={() => {
-                        setCurrentPage("scanCard");
+                    onClose={onClose}
+                    onBack={()=>{
+                        setCurrentPage("list")
                     }}
-                    onFinalize={(card) => {
+                    onDone={() => {
                         console.log(`Card to Add`, card);
                         addCard(card);
                         onSuccess();
+                    }}
+                    onCardUpdate={(updates) => {
+                        setCard((prev) => ({
+                            ...prev,
+                            ...updates,
+                        }));
                     }}
                 />
             )}
