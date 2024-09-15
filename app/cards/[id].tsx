@@ -16,6 +16,7 @@ import MapView, { Marker } from "react-native-maps";
 import { BlurView } from "expo-blur";
 import NoteModal from "@/components/NoteModal";
 import EditCardModal from "@/components/EditCardModal";
+import * as Brightness from "expo-brightness";
 
 const { width, height } = Dimensions.get("window");
 const ASPECT_RATIO = width / height;
@@ -26,7 +27,10 @@ export default function Page() {
     const [userLocation, setUserLocation] = useState<null | {
         latitude: number;
         longitude: number;
-    }>(null);
+    }>({
+        latitude: 42.9634,
+        longitude: -85.6681,
+    });
     const [isNotesOpen, setNotesOpen] = useState(false);
     const [isEditOpen, setEditOpen] = useState(false);
     const { id } = useLocalSearchParams();
@@ -35,12 +39,12 @@ export default function Page() {
     const card = getCard(String(id));
 
     useEffect(() => {
-        // Simulating getting user's location
-        // In a real app, you'd use Geolocation API
-        setUserLocation({
-            latitude: 42.9634,
-            longitude: -85.6681,
-        });
+        (async () => {
+            const { status } = await Brightness.requestPermissionsAsync();
+            if (status === "granted") {
+                Brightness.setSystemBrightnessAsync(1);
+            }
+        })();
     }, []);
 
     if (!card) {
@@ -72,7 +76,7 @@ export default function Page() {
                         </TouchableOpacity>
                     </View>
                     <View
-                        className="rounded-xl p-4 mt-4"
+                        className="rounded-xl p-4 mt-4 items-center"
                         style={{ backgroundColor: card.color }}
                     >
                         <LogoOrCode
@@ -83,7 +87,7 @@ export default function Page() {
                         <Text className="text-lg text-white text-center">
                             {card.title}
                         </Text>
-                        <View className="bg-white rounded-lg p-4 mt-8">
+                        <View className="bg-white rounded-lg p-4 mt-8 w-full">
                             <Barcode
                                 value={card.number}
                                 width={2}
@@ -175,14 +179,17 @@ export default function Page() {
                                         text: "Yes",
                                         onPress: () => {
                                             removeCard(card.id);
-                                            router.navigate("/(tabs)/")
+                                            router.navigate("/(tabs)/");
                                         },
-                                        
                                     },
-                                    {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
-
+                                    {
+                                        text: "Cancel",
+                                        onPress: () =>
+                                            console.log("Cancel Pressed"),
+                                        style: "cancel",
+                                    },
                                 ],
-                                {"cancelable": true}
+                                { cancelable: true }
                             );
                         }}
                     >

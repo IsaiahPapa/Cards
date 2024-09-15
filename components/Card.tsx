@@ -1,4 +1,5 @@
 import { BlurView } from "expo-blur";
+import { useRef } from "react";
 import { Image, Pressable, PressableProps, Text, View } from "react-native";
 type CardLocation = {
     latitude: number;
@@ -38,7 +39,7 @@ export const LogoOrCode = ({
     title = String(title ?? "");
     if (isKnownBrand && imageUri) {
         return (
-            <Image source={{ uri: imageUri }} className="h-20 aspect-square" />
+            <Image source={{ uri: imageUri }} className="h-20 w-full aspect-[1.6]" />
         );
     } else {
         let code = "";
@@ -68,8 +69,10 @@ const Card: React.FC<CardProps> = ({
     imageUri,
     ...pressableProps
 }) => {
+
     return (
         <Pressable
+
             {...pressableProps}
             style={{
                 backgroundColor: color,

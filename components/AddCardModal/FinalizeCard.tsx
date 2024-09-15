@@ -12,6 +12,27 @@ import Animated, { SlideInRight, SlideOutRight } from "react-native-reanimated";
 import { FontAwesome } from "@expo/vector-icons";
 import { RequireAtLeastOne } from "@/utils/types";
 
+import { z } from "zod";
+
+const validateCode39 = (value: string) => {
+    const code39Regex = /^[A-Z0-9\-\.\$\+\/% ]+$/;
+    return code39Regex.test(value);
+};
+
+const cardSchema = z.object({
+    title: z.string().min(1, "Card name is required"),
+    number: z
+        .string()
+        .min(1, "Barcode number is required")
+        .max(20, "Barcode number is too long") // You can adjust the max length as needed
+        .refine(
+            validateCode39,
+            "Invalid Code 39 barcode (only A-Z, 0-9, -, ., $, /, +, % are allowed)"
+        ),
+
+    color: z.string().optional(),
+});
+
 const FinalizeCard: React.FC<{
     card: CardType;
     onClose: (event: GestureResponderEvent) => void;
@@ -19,7 +40,29 @@ const FinalizeCard: React.FC<{
     onBack(): void;
     onCardUpdate: (updates: RequireAtLeastOne<CardType>) => void;
 }> = ({ card, onCardUpdate, onClose, onBack, onDone }) => {
-    {console.log(card)}
+    const [formErrors, setFormErrors] = useState<{
+        title?: string;
+        number?: string;
+    }>({});
+
+    const handleSave = () => {
+        // Validate form data with Zod
+        const result = cardSchema.safeParse(card);
+
+        if (!result.success) {
+            const errors = result.error.format();
+            // Set errors to display on the form
+            setFormErrors({
+                title: errors.title?._errors[0],
+                number: errors.number?._errors[0],
+            });
+        } else {
+            // If valid, clear errors and trigger the onDone and onCardUpdate functions
+            setFormErrors({});
+            onDone();
+        }
+    };
+    // TOOD: Add Validation to forms.
     return (
         <View className="flex-1 dark:bg-black p-4 w-full">
             <View className="flex flex-row justify-between mb-8 mt-4 items-center">
@@ -55,6 +98,10 @@ const FinalizeCard: React.FC<{
             <Text className="text-xl font-semibold mb-4 dark:text-white">
                 Card Name
             </Text>
+            {formErrors.title && (
+                <Text className="text-red-500">{formErrors.title}</Text>
+            )}
+
             <TextInput
                 className="bg-neutral-100 dark:bg-neutral-900 p-3 text-lg rounded-md mb-8 dark:text-white"
                 placeholder="e.g. Walmart"
@@ -63,9 +110,14 @@ const FinalizeCard: React.FC<{
                     onCardUpdate({ title });
                 }}
             />
+
             <Text className="text-xl font-semibold mb-4 dark:text-white">
                 Number
             </Text>
+            {formErrors.number && (
+                <Text className="text-red-500">{formErrors.number}</Text>
+            )}
+
             <TextInput
                 className="bg-neutral-100 dark:bg-neutral-900 p-3 text-lg rounded-md mb-8 dark:text-white"
                 placeholder="Barcode Number"
@@ -87,7 +139,7 @@ const FinalizeCard: React.FC<{
             )}
             <TouchableOpacity
                 className="bg-blue-500 p-3 rounded-xl mt-4"
-                onPress={onDone}
+                onPress={handleSave}
             >
                 <Text className="text-white text-center font-bold text-lg">
                     Save Card

@@ -1,11 +1,22 @@
 import AddCardModal from "@/components/AddCardModal";
-import Card from "@/components/Card";
+import Card, { CardType } from "@/components/Card";
 import { useIsDarkMode } from "@/components/Themed";
 import { useCardStore } from "@/utils/useCardsStore";
 import { FontAwesome } from "@expo/vector-icons";
+import { BlurView } from "expo-blur";
 import { router } from "expo-router";
-import React, { useEffect, useMemo, useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, Modal } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+
+import {
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    Modal,
+    Button,
+} from "react-native";
+import Animated from "react-native-reanimated";
+import { AnimatedView } from "react-native-reanimated/lib/typescript/reanimated2/component/View";
 import Svg, { Path } from "react-native-svg";
 
 //https://www.npmjs.com/package/react-native-wallet-manager
@@ -39,7 +50,6 @@ const DebugButtons = () => {
 };
 
 const NoCardsAddCardButton = ({ onAdd }: { onAdd(): void }) => {
-
     const isDarkMode = useIsDarkMode();
     return (
         <>
@@ -97,6 +107,7 @@ export default function LandingPage() {
                 </View>
 
                 <DebugButtons />
+
                 <View className="flex-1 flex-row flex-wrap justify-center">
                     {cards.map((card) => (
                         <Card
@@ -120,6 +131,7 @@ export default function LandingPage() {
                         />
                     ))}
                 </View>
+
                 {cards.length === 0 && (
                     <NoCardsAddCardButton
                         onAdd={() => {
@@ -138,8 +150,8 @@ export default function LandingPage() {
                     onSuccess={() => {
                         setModal("");
                     }}
-                    onClose={()=>{
-                        setModal("")
+                    onClose={() => {
+                        setModal("");
                     }}
                 />
             </Modal>
