@@ -19,8 +19,8 @@ import Animated from "react-native-reanimated";
 import { AnimatedView } from "react-native-reanimated/lib/typescript/reanimated2/component/View";
 import Svg, { Path } from "react-native-svg";
 
-//https://www.npmjs.com/package/react-native-wallet-manager
-
+// https://www.npmjs.com/package/react-native-wallet-manager
+// https://www.reactnative.university/blog/live-activities-unleashed
 const DebugButtons = () => {
     const { reset } = useCardStore();
     const isDev = useMemo(() => {
