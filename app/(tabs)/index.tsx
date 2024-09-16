@@ -1,9 +1,8 @@
 import AddCardModal from "@/components/AddCardModal";
-import Card, { CardType } from "@/components/Card";
+import Card from "@/components/Card";
 import { useIsDarkMode } from "@/components/Themed";
 import { useCardStore } from "@/utils/useCardsStore";
 import { FontAwesome } from "@expo/vector-icons";
-import { BlurView } from "expo-blur";
 import { router } from "expo-router";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
@@ -13,14 +12,13 @@ import {
     ScrollView,
     TouchableOpacity,
     Modal,
-    Button,
 } from "react-native";
-import Animated from "react-native-reanimated";
-import { AnimatedView } from "react-native-reanimated/lib/typescript/reanimated2/component/View";
 import Svg, { Path } from "react-native-svg";
 
 // https://www.npmjs.com/package/react-native-wallet-manager
 // https://www.reactnative.university/blog/live-activities-unleashed
+// https://icon.kitchen/i/H4sIAAAAAAAAA0WPPQ6DMAyF7%2BKuLIihEisX6MBWVVUSOxA1YBRCf4S4e21atfLgp2fr8%2FMKdxMXmqFeAU26tT0NBLU3caYCfNfEMJmUdTyTNEDyZokZCgiORzFcIgz56kxC2AqwXfuahACOIydZE8auajiUTmv3TgYxjJ1yM09Ql1UBKXS9nFBpOWcePjqS312B%2Bx%2F8G2u36KnBGgkwi2H%2F97y3lTtqqoFxifrlGcyIiQPqA6z7D7Jw2d7c9v%2BdCAEAAA%3D%3D
+
 const DebugButtons = () => {
     const { reset } = useCardStore();
     const isDev = useMemo(() => {
